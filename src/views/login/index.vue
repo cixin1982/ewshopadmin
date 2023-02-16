@@ -2,51 +2,52 @@
   <div class="view-account">
     <div class="view-account-header"></div>
     <div class="view-account-container">
-      <div class="view-account-top"></div>
-      <div class="view-account-top-logo m-0">
-        <img class="m-auto"
-            style="margin: auto"
-            src="@/assets/images/logo.png" alt="">
+      <div class="view-account-top">
+        <div class="view-account-top-logo m-0">
+          <img class="m-auto"
+               style="margin: auto"
+               src="@/assets/images/logo.png" alt="">
+        </div>
       </div>
-    </div>
-    <div class="view-account-form">
-      <n-form ref="formRef"
-              label-placement="left"
-              size="large"
-              :model="formInline"
-              :rules="rules">
-        <n-form-item path="username">
-          <n-input v-model:value="formInline.username"
-                   placeholder="用户名:super@a.com">
-            <template #prefix>
-              <n-icon size="18" color="#808695">
-                <PersonOutline/>
-              </n-icon>
-            </template>
-          </n-input>
-        </n-form-item>
-        <n-form-item path="password">
-          <n-input v-model:value="formInline.password"
-                   type="password"
-                   showPasswordOn="click"
-                   placeholder="密码:123123">
-            <template #prefix>
-              <n-icon size="18" color="#808695">
-                <LockClosedOutline/>
-              </n-icon>
-            </template>
-          </n-input>
-        </n-form-item>
-        <n-form-item>
-          <n-button type="primary"
-                    @click="handleSubmit"
-                    size="large"
-                    :loading="loading"
-                    block>
-            登录
-          </n-button>
-        </n-form-item>
-      </n-form>
+      <div class="view-account-form">
+        <n-form ref="formRef"
+                label-placement="left"
+                size="large"
+                :model="formInline"
+                :rules="rules">
+          <n-form-item path="username">
+            <n-input v-model:value="formInline.username"
+                     placeholder="用户名:super@a.com">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <PersonOutline/>
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+          <n-form-item path="password">
+            <n-input v-model:value="formInline.password"
+                     type="password"
+                     showPasswordOn="click"
+                     placeholder="密码:123123">
+              <template #prefix>
+                <n-icon size="18" color="#808695">
+                  <LockClosedOutline/>
+                </n-icon>
+              </template>
+            </n-input>
+          </n-form-item>
+          <n-form-item>
+            <n-button type="primary"
+                      @click="handleSubmit"
+                      size="large"
+                      :loading="loading"
+                      block>
+              登录
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </div>
     </div>
   </div>
 </template>
@@ -54,11 +55,19 @@
 <script lang="ts" setup>
   import { reactive, ref } from "vue";
   import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
+  import { useUserStore } from "@/store/user";
+  import { useRouter } from "vue-router";
 
   interface FormState {
     email: string;
     password: string;
   }
+
+  //定义变量
+  const formRef = ref();
+  const loading = ref(false);
+  const userStore = useUserStore();
+  const router = useRouter();
 
   const formInline = reactive({
     username: 'super@a.com',
@@ -80,9 +89,51 @@
     },
   };
 
+  //定义表单提交方式
   const handleSubmit = () => {
-    console.log(formInline)
+    // console.log(formInline)
+    //表单验证
+    formRef.value.validate(async (errors: any) => {
+      console.log(!errors)
+      if (!errors) {
+        //有错误就返回，不执行，不再往下发送请求
+        // return;
+        //接收数据
+        const {username, password} = formInline;
+        //显示登录中
+        loading.value = true;
+        //调整数据结构
+        const params: FormState = {
+          email: username,
+          password
+        };
+
+        try {
+          //执行登录操作
+          // console.log(params)
+          userStore.login(params).then(_res => {
+            //res是userStore里面返回的数据
+            //关闭窗口
+            // Comment(res);
+            // message.success('登录成功');
+            loading.value = false;
+            // 弹出提示  登陆成功
+            // 跳转回首页
+            // router.push({name: 'dashboard'});
+            console.log(_res)
+          }).catch(() => {
+            // console.log(err)
+            loading.value = false
+          });
+        } finally {
+          loading.value = false;
+        }
+      } else {
+        // message.error('请填写完整信息，并且进行验证码校验')
+      }
+    })
   }
+
 </script>
 
 <style lang="less" scoped>
