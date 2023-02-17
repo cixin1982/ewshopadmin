@@ -1,5 +1,4 @@
 import {defineStore} from "pinia";
-// import {login} from "@/api/auth";
 import {login, user} from "@/api/auth";
 
 //定义state中的数据类型
@@ -43,10 +42,10 @@ export const useUserStore = defineStore({
             // 一开新的窗口,token就会消失
             // sessionStorage.setItem('token',token);
             // token本地储存  localStarage本地存储
-            localStorage.setItem("token",token);
+            localStorage.setItem("token", token);
             this.token = token;
         },
-        steAvatar(avatar_url: string) {
+        setAvatar(avatar_url: string) {
             this.avatar_url = avatar_url;
         },
         setUserInfo(info: object) {
@@ -64,13 +63,27 @@ export const useUserStore = defineStore({
             try {
                 const response: any = await login(userInfo);
                 if (response.access_token) {
+
                     this.setToken(response.access_token);
                     // 登录之后，token已经拿到了，然后getUser获取调用
-                    // return await this.getUser();
+                    return await this.getUser();
                 }
             } catch (error) {
                 // console.log(error);
             }
         },
+
+        async getUser() {
+            // await userUserStore.getUser()
+            try {
+                const response: any = await user();
+                this.setUserInfo(response);
+                this.setAvatar(response.avatar_url);
+                this.setUserName(response.name);
+                return response;
+            } catch (error) {
+                // console.log(error)
+            }
+        }
     }
 });

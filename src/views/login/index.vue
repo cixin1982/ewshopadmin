@@ -53,10 +53,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { reactive, ref } from "vue";
-  import { PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
-  import { useUserStore } from "@/store/user";
-  import { useRouter } from "vue-router";
+  import {reactive, ref} from "vue";
+  import {PersonOutline, LockClosedOutline} from "@vicons/ionicons5";
+  import {useUserStore} from "@/store/user";
+  import {useRouter} from "vue-router";
+  import { useMessage } from 'naive-ui';
+
+  const message = useMessage();
+  (<any>window).$message = useMessage();
 
   interface FormState {
     email: string;
@@ -79,13 +83,13 @@
     //失去焦点触发
     username: {
       required: true,
-      message: '请输入用户名',
-      trigger: 'blur'
+      message: "请输入用户名",
+      trigger: "blur"
     },
     password: {
       required: true,
-      message: '请输入密码',
-      trigger: 'blur'
+      message: "请输入密码",
+      trigger: "blur"
     },
   };
 
@@ -93,8 +97,8 @@
   const handleSubmit = () => {
     // console.log(formInline)
     //表单验证
-    formRef.value.validate(async (errors: any) => {
-      console.log(!errors)
+    formRef.value.validate(async(errors:any)=> {
+      // console.log(!errors)
       if (!errors) {
         //有错误就返回，不执行，不再往下发送请求
         // return;
@@ -112,23 +116,26 @@
           //执行登录操作
           // console.log(params)
           userStore.login(params).then(_res => {
+            console.log(_res);
             //res是userStore里面返回的数据
             //关闭窗口
             // Comment(res);
-            // message.success('登录成功');
+            message.success("登陆成功");
             loading.value = false;
             // 弹出提示  登陆成功
             // 跳转回首页
-            // router.push({name: 'dashboard'});
-            console.log(_res)
+            router.push({name: "dashboard"});
           }).catch(() => {
             // console.log(err)
-            loading.value = false
+            loading.value = false;
           });
+          // 成功跳转到首页
+          // 失败后提示
         } finally {
           loading.value = false;
         }
-      } else {
+      }
+      else {
         // message.error('请填写完整信息，并且进行验证码校验')
       }
     })
