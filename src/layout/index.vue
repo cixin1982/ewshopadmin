@@ -7,7 +7,7 @@
     </n-layout-sider>
     <n-layout>
       <n-layout-header>
-<!--        <PageHeader></PageHeader>-->
+        <PageHeader></PageHeader>
       </n-layout-header>
       <n-layout-content
           content-style="padding: 0px;background-color:#f0f2f5">

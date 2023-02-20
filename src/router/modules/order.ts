@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             title: "订单管理",
             icon: renderIcon(JournalOutline),
-            sort: 0,
+            sort: 4,
         },
         children: [
             {

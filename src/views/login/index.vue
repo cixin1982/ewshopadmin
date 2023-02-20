@@ -116,7 +116,7 @@
           //执行登录操作
           // console.log(params)
           userStore.login(params).then(_res => {
-            console.log(_res);
+            // console.log(_res);
             //res是userStore里面返回的数据
             //关闭窗口
             // Comment(res);
@@ -151,7 +151,7 @@
     overflow: auto;
 
     &-container {
-      felx: 1;
+      flex: 1;
       padding: 32px 12px;
       max-width: 384px;
       min-width: 320px;

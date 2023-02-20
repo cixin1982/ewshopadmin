@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref,onMounted, h, Component } from "vue";
+  import { ref, onMounted } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import {routeModuleList}  from "@/router";
   import {generatorMenu} from "@/utils";
